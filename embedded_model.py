@@ -6,10 +6,10 @@ class embedded_request(BaseModel):
     Title: str = ''
     Customer: str = ''
     Description: str = ''
-    #sr_embedding: Optional[List[float]]
-    #title_embedding: Optional[List[float]]
-    #customer_embedding: Optional[List[float]]
-    #description_embedding: Optional[List[float]]
+    sr_embedding: Optional[List[float]]
+    title_embedding: Optional[List[float]]
+    customer_embedding: Optional[List[float]]
+    description_embedding: Optional[List[float]]
 
 class request_search(BaseModel):
     SR: str = ''
