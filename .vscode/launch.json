@@ -9,12 +9,13 @@
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
+            "console": "integratedTerminal",
             "args": [
                 "main:app",
                 "--reload"
             ],
-            "jinja": true,
-            "justMyCode": true
+            "justMyCode": false,
+            "purpose": ["debug-test"]
         }
     ]
 }

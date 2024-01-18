@@ -3,8 +3,9 @@ import embedding
 from custom_spec_model import service_request
 from embedded_model import embedded_request, request_search
 from pydantic import BaseModel
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 
 class custom_spec_model(BaseModel):
     SR: str
@@ -14,7 +15,17 @@ class custom_spec_model(BaseModel):
 
 app = FastAPI()
 
-@app.post("/search")
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/search")
 def search_request(query: str, limit: int, candidates: int):
     service_requests = []
     service_requests.extend(__get_search_result(query, limit, candidates, "title_embedding"))
@@ -22,7 +33,8 @@ def search_request(query: str, limit: int, candidates: int):
     service_requests.extend(__get_search_result(query, limit, candidates, "sr_embedding"))
     service_requests.extend(__get_search_result(query, limit, candidates, "customer_embedding"))
 
-    final_result = sorted(service_requests, key=lambda x: x.Score, reverse=True)[:limit]
+    filtered_result = __remove_SR_Duplicates(service_requests)
+    final_result = sorted(filtered_result, key=lambda x: x.Score, reverse=True)[:limit]
     
     return jsonable_encoder(final_result)
 
@@ -87,3 +99,16 @@ def __get_search_result(query: str, limit: int, candidates: int, field: str):
                  Score=document["score"]))
 
     return service_requests
+
+def __remove_SR_Duplicates(service_requests: []):
+    filtered_list = []
+    unique_SR_list = []
+
+    for obj in service_requests:
+        if obj.SR in unique_SR_list:
+            continue
+        else:
+           unique_SR_list.append(obj.SR)
+           filtered_list.append(obj) 
+
+    return filtered_list

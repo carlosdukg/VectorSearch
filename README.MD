@@ -4,17 +4,17 @@ Vector search on multiple document vector indexes for custom change specificatio
 
 ## Installation
 
-Use Docker to installed and run the application.
+Use Docker to install and run the application.
 
 ```bash
 https://www.docker.com/products/docker-desktop/
+
+git clone https://github.com/carlosdukg/VectorSearch.git
 ```
 
 ## Usage
 
 ```bash
-git clone https://github.com/carlosdukg/VectorSearch.git
-
 # Build and run the image locally
 docker build --tag {YOUR-TAG-NAME} .
 
